@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">Simple Dart Tracker</string>
+
+    <!-- Wordmark (brand; identical in every language) -->
+    <string name="brand_line1">SIMPLE DART</string>
+    <string name="brand_line2">TRACKER</string>
+
+    <!-- Welcome -->
+    <string name="welcome_tagline">Dart maçlarını takip et, skorunu yükselt.</string>
+    <string name="welcome_google_signin">Google ile giriş yap (yakında)</string>
+    <string name="welcome_continue_guest">Hesap olmadan devam et</string>
+
+    <!-- Game modes -->
+    <string name="mode_x01">X01</string>
+    <string name="mode_x01_subtitle">301, 501 ya da özel skor</string>
+    <string name="mode_cricket">Cricket</string>
+    <string name="mode_cricket_subtitle">15–20 ve bull\'u kapat</string>
+    <string name="mode_training">Antrenman</string>
+    <string name="mode_training_subtitle">Antrenman modları</string>
+
+    <!-- Home -->
+    <string name="home_history">Geçmiş</string>
+    <string name="home_history_subtitle">Oynanmış oyunlar ve istatistikler</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ayarlar</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_default_rules">Varsayılan kurallar</string>
+
+    <!-- X01 rules -->
+    <string name="x01_title">X01</string>
+    <string name="rules_starting_score">Başlangıç skoru</string>
+    <string name="rules_out_mode">Bitiş kuralı</string>
+    <string name="out_double">Double out</string>
+    <string name="out_straight">Straight out</string>
+    <string name="preset_custom">Özel</string>
+    <string name="x01_tap_to_start">Başlamak için dokun</string>
+    <string name="action_start">Başla</string>
+
+    <!-- Players -->
+    <string name="players_title">Oyuncular</string>
+    <string name="players_count">Oyuncu sayısı</string>
+    <string name="player_word">Oyuncu</string>
+
+    <!-- Dart pad -->
+    <string name="label_double">Double</string>
+    <string name="label_triple">Triple</string>
+    <string name="label_double_bull">Double bull</string>
+    <string name="label_bull">Bull</string>
+    <string name="label_miss">Boş</string>
+    <string name="label_bust">BUST</string>
+    <string name="label_checkout">CHECKOUT</string>
+    <string name="action_undo">Geri al</string>
+    <string name="action_confirm">Onayla</string>
+    <string name="action_home">Ana menü</string>
+    <string name="action_continue">Tekrar oyna</string>
+    <string name="game_winner">kazandı!</string>
+    <string name="game_continue_question">Tekrar oynamak ister misiniz?</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_open_settings">Ayarları aç</string>
+    <string name="cd_back">Geri</string>
+    <string name="cd_decrease">Azalt</string>
+    <string name="cd_increase">Artır</string>
+</resources>

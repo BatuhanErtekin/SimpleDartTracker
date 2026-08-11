@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">Simple Dart Tracker</string>
+
+    <!-- Wordmark (brand; identical in every language) -->
+    <string name="brand_line1">SIMPLE DART</string>
+    <string name="brand_line2">TRACKER</string>
+
+    <!-- Welcome -->
+    <string name="welcome_tagline">Track your dart matches, raise your game.</string>
+    <string name="welcome_google_signin">Sign in with Google (soon)</string>
+    <string name="welcome_continue_guest">Continue without an account</string>
+
+    <!-- Game modes -->
+    <string name="mode_x01">X01</string>
+    <string name="mode_x01_subtitle">301, 501 or a custom score</string>
+    <string name="mode_cricket">Cricket</string>
+    <string name="mode_cricket_subtitle">Close 15–20 and the bull</string>
+    <string name="mode_training">Training</string>
+    <string name="mode_training_subtitle">Practice drills</string>
+
+    <!-- Home -->
+    <string name="home_history">History</string>
+    <string name="home_history_subtitle">Past games and statistics</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_default_rules">Default rules</string>
+
+    <!-- X01 rules -->
+    <string name="x01_title">X01</string>
+    <string name="rules_starting_score">Starting score</string>
+    <string name="rules_out_mode">Finish rule</string>
+    <string name="out_double">Double out</string>
+    <string name="out_straight">Straight out</string>
+    <string name="preset_custom">Custom</string>
+    <string name="x01_tap_to_start">Tap to start</string>
+    <string name="action_start">Start</string>
+
+    <!-- Players -->
+    <string name="players_title">Players</string>
+    <string name="players_count">Number of players</string>
+    <string name="player_word">Player</string>
+
+    <!-- Dart pad -->
+    <string name="label_double">Double</string>
+    <string name="label_triple">Triple</string>
+    <string name="label_double_bull">Double bull</string>
+    <string name="label_bull">Bull</string>
+    <string name="label_miss">Miss</string>
+    <string name="label_bust">BUST</string>
+    <string name="label_checkout">CHECKOUT</string>
+    <string name="action_undo">Undo</string>
+    <string name="action_confirm">Confirm</string>
+    <string name="action_home">Home</string>
+    <string name="action_continue">Play again</string>
+    <string name="game_winner">wins!</string>
+    <string name="game_continue_question">Do you want to play again?</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_open_settings">Open settings</string>
+    <string name="cd_back">Back</string>
+    <string name="cd_decrease">Decrease</string>
+    <string name="cd_increase">Increase</string>
+</resources>
