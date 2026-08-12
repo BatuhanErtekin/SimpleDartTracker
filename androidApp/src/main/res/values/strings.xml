@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">SimpleDartTracker</string>
+    <!-- The launcher label. Matches app_name in the shared composeResources. -->
+    <string name="app_name">Simple Dart Tracker</string>
 </resources>

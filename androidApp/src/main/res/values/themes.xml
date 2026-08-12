@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      A dark launch theme. The app itself is always dark, so a light platform theme would
+      flash white between the launcher and the first Compose frame.
+    -->
+    <style name="Theme.SimpleDartTracker" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/brand_slate</item>
+    </style>
+</resources>

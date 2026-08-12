@@ -1,22 +1,32 @@
 package com.batu.simpledarttracker.ui.game
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
@@ -41,7 +51,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,9 +62,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.lerp
 import com.batu.simpledarttracker.domain.engine.X01Engine
 import com.batu.simpledarttracker.domain.model.Dart
 import com.batu.simpledarttracker.domain.model.GameStatus
@@ -62,7 +72,6 @@ import com.batu.simpledarttracker.domain.model.X01GameState
 import com.batu.simpledarttracker.domain.model.X01PlayerState
 import com.batu.simpledarttracker.ui.common.BackIcon
 import com.batu.simpledarttracker.ui.theme.Brand
-import kotlin.math.absoluteValue
 import org.jetbrains.compose.resources.stringResource
 import simpledarttracker.shared.generated.resources.Res
 import simpledarttracker.shared.generated.resources.action_confirm
@@ -85,11 +94,14 @@ import simpledarttracker.shared.generated.resources.out_straight
 // Arena color (brand).
 private val KeyBg = Color(0xFF243129)
 
-// Page size that fits about three player headers at once.
-private val ThreeUpPageSize = object : PageSize {
-    override fun Density.calculateMainAxisPageSize(availableSpace: Int, pageSpacing: Int): Int =
-        (availableSpace - 2 * pageSpacing) / 3
-}
+// How many player headers are visible at once in the carousel.
+private const val HEADERS_ABREAST = 3
+private val HeaderSpacing = 8.dp
+
+// A key splits its width by weight: the label takes half, the D/T sections a quarter each.
+// Bull only has a D, so that one section is given the room of both and the key reads 50/50.
+private const val KEY_LABEL_WEIGHT = 2f
+private const val KEY_OPTION_WEIGHT = 1f
 
 /**
  * The interactive X01 board — a dark "arena". The dart pad stays **fixed**; only the strip
@@ -110,12 +122,6 @@ fun GameBoard(
     val outLabel = stringResource(
         if (state.config.doubleOut) Res.string.out_double else Res.string.out_straight,
     )
-    val pagerState = rememberPagerState(initialPage = state.currentPlayerIndex) { state.players.size }
-
-    LaunchedEffect(state.currentPlayerIndex) {
-        pagerState.animateScrollToPage(state.currentPlayerIndex, animationSpec = tween(durationMillis = 420))
-    }
-
     Scaffold(
         modifier = modifier,
         containerColor = Brand.Slate,
@@ -147,29 +153,12 @@ fun GameBoard(
         },
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
-            // Scrolling player headers (name + score). This strip is the only thing that moves.
-            HorizontalPager(
-                state = pagerState,
-                pageSize = ThreeUpPageSize,
-                pageSpacing = 8.dp,
-                snapPosition = SnapPosition.Center,
-                userScrollEnabled = false,
+            // Player headers (name + score). The player in turn is always centred.
+            PlayerHeaders(
+                state = state,
+                outcome = outcome,
                 modifier = Modifier.fillMaxWidth().height(96.dp).padding(top = 8.dp),
-            ) { page ->
-                val offset = ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction)
-                    .absoluteValue.coerceIn(0f, 1f)
-                val isCurrent = page == state.currentPlayerIndex
-                PlayerHeaderCard(
-                    player = state.players[page],
-                    isCurrent = isCurrent,
-                    remaining = if (isCurrent && outcome != TurnOutcome.BUST) state.currentRemaining
-                    else state.players[page].remaining,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(horizontal = 3.dp)
-                        .graphicsLayer { alpha = lerp(0.4f, 1f, 1f - offset) },
-                )
-            }
+            )
 
             // Fixed dart pad.
             DartPad(
@@ -209,6 +198,63 @@ fun GameBoard(
     }
 }
 
+/**
+ * The strip of player headers: the player in turn sits in the middle, neighbours peek in at
+ * the sides. It can be swiped to look up someone who is off-screen, and drifts back to the
+ * player in turn as soon as the swipe settles.
+ */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun PlayerHeaders(
+    state: X01GameState,
+    outcome: TurnOutcome,
+    modifier: Modifier = Modifier,
+) {
+    // The player in turn shows the live score, unless the turn busted and reverts on confirm.
+    fun remainingOf(index: Int): Int =
+        if (index == state.currentPlayerIndex && outcome != TurnOutcome.BUST) state.currentRemaining
+        else state.players[index].remaining
+
+    val pagerState = rememberPagerState(initialPage = state.currentPlayerIndex) { state.players.size }
+    // Read through a holder so the settle-back effect below always compares against the
+    // current turn without having to restart its collector every turn.
+    val turnPage by rememberUpdatedState(state.currentPlayerIndex)
+
+    LaunchedEffect(state.currentPlayerIndex) {
+        pagerState.animateScrollToPage(state.currentPlayerIndex, animationSpec = tween(durationMillis = 420))
+    }
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.isScrollInProgress }.collect { scrolling ->
+            if (!scrolling && pagerState.currentPage != turnPage) {
+                pagerState.animateScrollToPage(turnPage, animationSpec = tween(durationMillis = 420))
+            }
+        }
+    }
+
+    BoxWithConstraints(modifier) {
+        // Three cards abreast. The side padding is what lets the first and last player settle
+        // in the middle too — without it the pager runs out of scroll and they stay off-centre.
+        val pageWidth = (maxWidth - HeaderSpacing * 2) / HEADERS_ABREAST
+        HorizontalPager(
+            state = pagerState,
+            pageSize = PageSize.Fixed(pageWidth),
+            contentPadding = PaddingValues(horizontal = (maxWidth - pageWidth) / 2),
+            pageSpacing = HeaderSpacing,
+            snapPosition = SnapPosition.Center,
+            modifier = Modifier.fillMaxSize(),
+        ) { page ->
+            PlayerHeaderCard(
+                player = state.players[page],
+                isCurrent = page == state.currentPlayerIndex,
+                remaining = remainingOf(page),
+                // Must fill the page: a card sized to its text would sit at the page's
+                // leading edge and read as off-centre.
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
+    }
+}
+
 @Composable
 private fun PlayerHeaderCard(
     player: X01PlayerState,
@@ -216,12 +262,14 @@ private fun PlayerHeaderCard(
     remaining: Int,
     modifier: Modifier = Modifier,
 ) {
-    val container = if (isCurrent) Brand.Spruce else KeyBg
-    val nameColor = if (isCurrent) Brand.Chalk else Brand.Wire
+    val alpha by animateFloatAsState(if (isCurrent) 1f else 0.45f, label = "playerHeaderAlpha")
+    val shape = RoundedCornerShape(14.dp)
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(14.dp))
-            .background(container)
+            .graphicsLayer { this.alpha = alpha }
+            .clip(shape)
+            .background(if (isCurrent) Brand.Spruce else KeyBg)
+            .then(if (isCurrent) Modifier.border(2.dp, Brand.Chalk.copy(alpha = 0.45f), shape) else Modifier)
             .padding(horizontal = 6.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -230,16 +278,23 @@ private fun PlayerHeaderCard(
             text = player.player.name,
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.SemiBold,
-            color = nameColor,
+            color = if (isCurrent) Brand.Chalk else Brand.Wire,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
         Text(
             text = remaining.toString(),
-            style = MaterialTheme.typography.headlineMedium,
+            style = if (isCurrent) MaterialTheme.typography.headlineMedium
+            else MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             color = Brand.Chalk,
         )
+        // A bull-red underline marks whose throw it is, for anyone who cannot rely on the
+        // green fill alone.
+        if (isCurrent) {
+            Spacer(Modifier.height(4.dp))
+            Box(Modifier.width(28.dp).height(3.dp).clip(RoundedCornerShape(2.dp)).background(Brand.Bull))
+        }
     }
 }
 
@@ -249,6 +304,7 @@ private data class KeyOption(
     val color: Color,
     val dart: Dart,
     val menuLabel: String,
+    val weight: Float = KEY_OPTION_WEIGHT,
 )
 
 @Composable
@@ -263,12 +319,14 @@ private fun DartPad(enabled: Boolean, onDart: (Dart) -> Unit, modifier: Modifier
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        (20 downTo 1).chunked(2).forEach { pair ->
+        // Numbers run down each column — 20..11 on the left, 10..1 on the right — rather than
+        // snaking across the rows, so the eye can follow one column to find a value.
+        (20 downTo 11).zip(10 downTo 1).forEach { (left, right) ->
             Row(
                 modifier = Modifier.fillMaxWidth().weight(1f),
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                pair.forEach { n ->
+                listOf(left, right).forEach { n ->
                     DartKey(
                         mainLabel = n.toString(),
                         enabled = enabled,
@@ -291,7 +349,9 @@ private fun DartPad(enabled: Boolean, onDart: (Dart) -> Unit, modifier: Modifier
                 mainLabel = bullWord,
                 enabled = enabled,
                 single = Dart.Bull,
-                options = listOf(KeyOption("D", Brand.Spruce, Dart.DoubleBull, "$doubleBullWord (50)")),
+                options = listOf(
+                    KeyOption("D", Brand.Spruce, Dart.DoubleBull, "$doubleBullWord (50)", KEY_LABEL_WEIGHT),
+                ),
                 onDart = onDart,
                 modifier = Modifier.weight(1f).fillMaxHeight(),
             )
@@ -322,7 +382,7 @@ private fun DartKey(
         // Single (tap) plus the long-press menu.
         Box(
             modifier = Modifier
-                .weight(1f)
+                .weight(KEY_LABEL_WEIGHT)
                 .fillMaxHeight()
                 .background(if (enabled) KeyBg else KeyBg.copy(alpha = 0.4f))
                 .combinedClickable(
@@ -352,7 +412,7 @@ private fun DartKey(
             Box(Modifier.width(1.5.dp).fillMaxHeight().background(Brand.Slate))
             Box(
                 modifier = Modifier
-                    .width(34.dp)
+                    .weight(opt.weight)
                     .fillMaxHeight()
                     .background(if (enabled) opt.color else opt.color.copy(alpha = 0.35f))
                     .clickable(enabled = enabled) { onDart(opt.dart) },
@@ -378,7 +438,12 @@ private fun TurnControls(
 ) {
     Surface(color = Brand.Slate2, contentColor = Brand.Chalk) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(12.dp),
+            // The surface itself runs to the bottom edge; only its content clears the
+            // navigation bar, so the bar sits on the panel colour rather than on the buttons.
+            modifier = Modifier
+                .fillMaxWidth()
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom))
+                .padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Row(
