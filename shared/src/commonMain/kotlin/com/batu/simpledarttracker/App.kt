@@ -80,13 +80,7 @@ fun App() {
                 )
 
                 Screen.Home -> HomeScreen(
-                    onGameSelected = { mode ->
-                        when (mode) {
-                            GameMode.X01, GameMode.CRICKET -> navigation.push(Screen.Setup(mode))
-                            GameMode.TRAINING -> { /* TODO: Training */ }
-                        }
-                    },
-                    onHistory = { /* TODO: history */ },
+                    onGameSelected = { mode -> navigation.push(Screen.Setup(mode)) },
                 )
 
                 is Screen.Setup -> GameSetupScreen(

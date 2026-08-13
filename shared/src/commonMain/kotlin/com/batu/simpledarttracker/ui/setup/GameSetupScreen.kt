@@ -75,6 +75,7 @@ fun GameSetupScreen(
     onStart: (MatchSetup) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val accent = accentFor(mode)
     val playerWord = stringResource(Res.string.player_word)
     val defaultName: (Int) -> String = { index -> "$playerWord ${index + 1}" }
 
@@ -174,6 +175,7 @@ fun GameSetupScreen(
         ) {
             when (mode) {
                 GameMode.X01 -> X01Options(
+                    accent = accent,
                     preset = preset,
                     onPresetChange = { preset = it },
                     customScore = customScore,
@@ -182,6 +184,7 @@ fun GameSetupScreen(
                     onDoubleOutChange = { doubleOut = it },
                 )
                 GameMode.CRICKET -> CricketOptions(
+                    accent = accent,
                     preset = cricketPreset,
                     selectedTargets = cricketTargets,
                     marks = cricketMarks,

@@ -84,7 +84,7 @@ fun GameSettingsDialog(
         confirmButton = {
             TextButton(
                 onClick = onDismiss,
-                colors = ButtonDefaults.textButtonColors(contentColor = Brand.Spruce),
+                colors = ButtonDefaults.textButtonColors(contentColor = Brand.Green),
             ) {
                 Text(stringResource(Res.string.action_close))
             }
@@ -244,8 +244,8 @@ private fun PlayerOrderRow(
             .clip(RoundedCornerShape(10.dp))
             .background(
                 when {
-                    isDragged -> Brand.Spruce.copy(alpha = 0.85f)
-                    isThrowing -> Brand.Spruce
+                    isDragged -> Brand.Green.copy(alpha = 0.85f)
+                    isThrowing -> Brand.Green
                     else -> Brand.Key
                 },
             )
@@ -262,7 +262,7 @@ private fun PlayerOrderRow(
             text = name,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = if (isThrowing) FontWeight.Bold else FontWeight.Normal,
-            color = Brand.Chalk,
+            color = if (isThrowing || isDragged) Brand.Ink else Brand.Chalk,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f),

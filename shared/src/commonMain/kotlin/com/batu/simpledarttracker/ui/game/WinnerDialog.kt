@@ -28,7 +28,7 @@ fun WinnerDialog(
         confirmButton = {
             TextButton(
                 onClick = onPlayAgain,
-                colors = ButtonDefaults.textButtonColors(contentColor = Brand.Spruce),
+                colors = ButtonDefaults.textButtonColors(contentColor = Brand.Green),
             ) {
                 Text(stringResource(Res.string.action_continue))
             }

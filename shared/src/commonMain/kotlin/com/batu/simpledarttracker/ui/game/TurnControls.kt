@@ -85,7 +85,8 @@ fun TurnControls(
                 OutlinedButton(
                     onClick = onUndo,
                     enabled = canUndo,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Brand.Chalk),
+                    // Amber: taking something back is the one action here worth a second look.
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Brand.Amber),
                     modifier = Modifier.weight(1f),
                 ) {
                     Text(stringResource(Res.string.action_undo))

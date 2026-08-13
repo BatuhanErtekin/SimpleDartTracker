@@ -142,7 +142,7 @@ private fun <T> DartKey(
                     text = opt.letter,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Brand.Chalk,
+                    color = Brand.Ink,
                 )
             }
         }

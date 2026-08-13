@@ -47,6 +47,7 @@ fun startingScoreOf(preset: Int, customScore: Int): Int = when (preset) {
 /** The X01-specific part of the setup screen: starting score and finish rule. */
 @Composable
 fun X01Options(
+    accent: ModeAccent,
     preset: Int,
     onPresetChange: (Int) -> Unit,
     customScore: Int,
@@ -65,12 +66,14 @@ fun X01Options(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             PresetTile(
+                accent = accent,
                 score = 301,
                 selected = preset == PRESET_301,
                 onClick = { onPresetChange(PRESET_301) },
                 modifier = Modifier.weight(1f),
             )
             PresetTile(
+                accent = accent,
                 score = 501,
                 selected = preset == PRESET_501,
                 onClick = { onPresetChange(PRESET_501) },
@@ -78,6 +81,7 @@ fun X01Options(
             )
         }
         CustomTile(
+            accent = accent,
             score = customScore,
             selected = preset == PRESET_CUSTOM,
             onSelect = { onPresetChange(PRESET_CUSTOM) },
@@ -90,12 +94,14 @@ fun X01Options(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             ChoiceTile(
+                accent = accent,
                 text = stringResource(Res.string.out_double),
                 selected = doubleOut,
                 onClick = { onDoubleOutChange(true) },
                 modifier = Modifier.weight(1f),
             )
             ChoiceTile(
+                accent = accent,
                 text = stringResource(Res.string.out_straight),
                 selected = !doubleOut,
                 onClick = { onDoubleOutChange(false) },
@@ -108,12 +114,13 @@ fun X01Options(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PresetTile(
+    accent: ModeAccent,
     score: Int,
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(onClick = onClick, modifier = modifier.height(120.dp), colors = setupTileColors(selected)) {
+    Card(onClick = onClick, modifier = modifier.height(120.dp), colors = setupTileColors(selected, accent)) {
         Column(
             modifier = Modifier.fillMaxSize().padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -129,7 +136,7 @@ private fun PresetTile(
                 text = "X01",
                 style = MaterialTheme.typography.labelMedium,
                 letterSpacing = 3.sp,
-                color = MaterialTheme.colorScheme.primary,
+                color = accent.vivid,
             )
         }
     }
@@ -138,12 +145,13 @@ private fun PresetTile(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CustomTile(
+    accent: ModeAccent,
     score: Int,
     selected: Boolean,
     onSelect: () -> Unit,
     onScoreChange: (Int) -> Unit,
 ) {
-    Card(onClick = onSelect, modifier = Modifier.fillMaxWidth(), colors = setupTileColors(selected)) {
+    Card(onClick = onSelect, modifier = Modifier.fillMaxWidth(), colors = setupTileColors(selected, accent)) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -170,12 +178,13 @@ private fun CustomTile(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ChoiceTile(
+    accent: ModeAccent,
     text: String,
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(onClick = onClick, modifier = modifier, colors = setupTileColors(selected)) {
+    Card(onClick = onClick, modifier = modifier, colors = setupTileColors(selected, accent)) {
         Text(
             text = text,
             style = MaterialTheme.typography.titleMedium,

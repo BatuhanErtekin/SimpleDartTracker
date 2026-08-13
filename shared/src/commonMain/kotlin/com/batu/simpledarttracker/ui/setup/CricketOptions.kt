@@ -27,6 +27,7 @@ import com.batu.simpledarttracker.domain.cricket.CricketScoring
 import com.batu.simpledarttracker.domain.cricket.CricketTarget
 import com.batu.simpledarttracker.domain.cricket.MarkChoices
 import com.batu.simpledarttracker.domain.cricket.marksToClose
+import com.batu.simpledarttracker.ui.theme.Brand
 import org.jetbrains.compose.resources.stringResource
 import simpledarttracker.shared.generated.resources.Res
 import simpledarttracker.shared.generated.resources.cricket_scoring
@@ -60,6 +61,7 @@ private const val NUMBERS_PER_ROW = 5
  */
 @Composable
 fun CricketOptions(
+    accent: ModeAccent,
     preset: Int,
     selectedTargets: Set<CricketTarget>,
     marks: Map<CricketTarget, Int>,
@@ -81,18 +83,21 @@ fun CricketOptions(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             PresetTile(
+                accent = accent,
                 text = stringResource(Res.string.preset_standard),
                 selected = preset == CRICKET_PRESET_STANDARD,
                 onClick = onStandard,
                 modifier = Modifier.weight(1f),
             )
             PresetTile(
+                accent = accent,
                 text = stringResource(Res.string.preset_random),
                 selected = preset == CRICKET_PRESET_RANDOM,
                 onClick = onRandom,
                 modifier = Modifier.weight(1f),
             )
             PresetTile(
+                accent = accent,
                 text = stringResource(Res.string.preset_custom),
                 selected = preset == CRICKET_PRESET_CUSTOM,
                 onClick = onCustom,
@@ -108,6 +113,7 @@ fun CricketOptions(
             ) {
                 row.forEach { target ->
                     TargetChip(
+                        accent = accent,
                         label = target.value.toString(),
                         selected = target in selectedTargets,
                         onClick = { onToggleTarget(target) },
@@ -128,12 +134,14 @@ fun CricketOptions(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     TargetChip(
+                        accent = accent,
                         label = extraLabel(target),
                         selected = isSelected,
                         onClick = { onToggleTarget(target) },
                         modifier = Modifier.fillMaxWidth(),
                     )
                     MarkSelector(
+                        accent = accent,
                         value = marksToClose(target, marks),
                         dimmed = !isSelected,
                         onSelect = { onMarksChange(target, it) },
@@ -148,12 +156,14 @@ fun CricketOptions(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             PresetTile(
+                accent = ModeAccent(Brand.Green, Brand.GreenDeep),
                 text = stringResource(Res.string.cricket_scoring_plain),
                 selected = scoring == CricketScoring.STANDARD,
                 onClick = { onScoringChange(CricketScoring.STANDARD) },
                 modifier = Modifier.weight(1f),
             )
             PresetTile(
+                accent = ModeAccent(Brand.Red, Brand.RedDeep),
                 text = stringResource(Res.string.cricket_scoring_penalty),
                 selected = scoring == CricketScoring.CUT_THROAT,
                 onClick = { onScoringChange(CricketScoring.CUT_THROAT) },
@@ -186,12 +196,13 @@ private fun extraLabel(target: CricketTarget): String = when (target) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PresetTile(
+    accent: ModeAccent,
     text: String,
     selected: Boolean,
     onClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
-    val colors = setupTileColors(selected)
+    val colors = setupTileColors(selected, accent)
     val label = @Composable {
         Text(
             text = text,
@@ -215,6 +226,7 @@ private fun PresetTile(
  */
 @Composable
 private fun MarkSelector(
+    accent: ModeAccent,
     value: Int,
     dimmed: Boolean,
     onSelect: (Int) -> Unit,
@@ -233,7 +245,7 @@ private fun MarkSelector(
                     .clip(RoundedCornerShape(6.dp))
                     .background(
                         if (active) {
-                            MaterialTheme.colorScheme.primary
+                            accent.vivid
                         } else {
                             MaterialTheme.colorScheme.surfaceVariant
                         },
@@ -246,7 +258,7 @@ private fun MarkSelector(
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = if (active) FontWeight.Bold else FontWeight.Normal,
                     color = if (active) {
-                        MaterialTheme.colorScheme.onPrimary
+                        Brand.Ink
                     } else {
                         MaterialTheme.colorScheme.onSurfaceVariant
                     },
@@ -260,12 +272,13 @@ private fun MarkSelector(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TargetChip(
+    accent: ModeAccent,
     label: String,
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(onClick = onClick, modifier = modifier.height(48.dp), colors = setupTileColors(selected)) {
+    Card(onClick = onClick, modifier = modifier.height(48.dp), colors = setupTileColors(selected, accent)) {
         Column(
             modifier = Modifier.fillMaxSize().padding(2.dp),
             horizontalAlignment = Alignment.CenterHorizontally,

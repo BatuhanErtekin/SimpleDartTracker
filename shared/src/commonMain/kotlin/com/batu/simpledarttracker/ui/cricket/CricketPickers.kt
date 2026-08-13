@@ -127,7 +127,7 @@ fun HousePickerDialog(
             TextButton(
                 onClick = { onPicked(darts) },
                 enabled = chosen,
-                colors = ButtonDefaults.textButtonColors(contentColor = Brand.Spruce),
+                colors = ButtonDefaults.textButtonColors(contentColor = Brand.Green),
             ) {
                 Text(stringResource(Res.string.action_confirm))
             }
@@ -227,7 +227,7 @@ private fun PickerChip(
         modifier = modifier
             .height(40.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(if (selected) Brand.Spruce else Brand.Key)
+            .background(if (selected) Brand.Green else Brand.Key)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
@@ -235,7 +235,7 @@ private fun PickerChip(
             text = label,
             style = MaterialTheme.typography.titleSmall,
             fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-            color = Brand.Chalk,
+            color = if (selected) Brand.Ink else Brand.Chalk,
         )
     }
 }

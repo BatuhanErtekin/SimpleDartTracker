@@ -65,8 +65,8 @@ fun SplashScreen(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             DartMark(
                 lineColor = Brand.Chalk,
-                greenColor = Brand.Spruce,
-                redColor = Brand.Bull,
+                greenColor = Brand.Green,
+                redColor = Brand.Red,
                 haloColor = Brand.Slate,
                 ringsAppear = rings.value,
                 dartAppear = dart.value,
@@ -108,7 +108,7 @@ fun SplashScreen(
                 modifier = Modifier
                     .fillMaxWidth(progress.value)
                     .fillMaxHeight()
-                    .background(Brand.Spruce, RoundedCornerShape(2.dp)),
+                    .background(Brand.Green, RoundedCornerShape(2.dp)),
             )
         }
     }

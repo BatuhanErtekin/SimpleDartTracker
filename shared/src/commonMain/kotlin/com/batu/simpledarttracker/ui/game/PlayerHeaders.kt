@@ -115,12 +115,12 @@ private fun PlayerHeaderCard(
         label = "playerHeaderAlpha",
     )
     val container by animateColorAsState(
-        targetValue = if (isCurrent) Brand.Spruce else Brand.Key,
+        targetValue = if (isCurrent) Brand.Green else Brand.Key,
         animationSpec = tween(TURN_ANIMATION_MILLIS),
         label = "playerHeaderContainer",
     )
     val nameColor by animateColorAsState(
-        targetValue = if (isCurrent) Brand.Chalk else Brand.Wire,
+        targetValue = if (isCurrent) Brand.Ink else Brand.Wire,
         animationSpec = tween(TURN_ANIMATION_MILLIS),
         label = "playerHeaderName",
     )
@@ -157,7 +157,7 @@ private fun PlayerHeaderCard(
             text = headline,
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
-            color = Brand.Chalk,
+            color = if (isCurrent) Brand.Ink else Brand.Chalk,
         )
         // A bull-red underline marks whose throw it is, for anyone who cannot rely on the
         // green fill alone.
@@ -167,7 +167,7 @@ private fun PlayerHeaderCard(
                 .width(UnderlineWidth * underline)
                 .height(3.dp)
                 .clip(RoundedCornerShape(2.dp))
-                .background(Brand.Bull),
+                .background(Brand.Ink),
         )
     }
 }

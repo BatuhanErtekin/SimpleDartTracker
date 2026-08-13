@@ -165,17 +165,17 @@ private fun ScoreHeader(state: CricketGameState) {
             // The turn moves by colour and by an underline that grows into place — nothing is
             // scaled, so type stays crisp and the columns never jostle each other.
             val container by animateColorAsState(
-                targetValue = if (isCurrent) Brand.Spruce else Brand.Key,
+                targetValue = if (isCurrent) Brand.Green else Brand.Key,
                 animationSpec = tween(TURN_ANIMATION_MILLIS),
                 label = "headerContainer",
             )
             val nameColor by animateColorAsState(
-                targetValue = if (isCurrent) Brand.Chalk else Brand.Wire,
+                targetValue = if (isCurrent) Brand.Ink else Brand.Wire,
                 animationSpec = tween(TURN_ANIMATION_MILLIS),
                 label = "headerName",
             )
             val scoreColor by animateColorAsState(
-                targetValue = if (isCurrent) Brand.Chalk else Brand.Chalk.copy(alpha = 0.55f),
+                targetValue = if (isCurrent) Brand.Ink else Brand.Chalk.copy(alpha = 0.55f),
                 animationSpec = tween(TURN_ANIMATION_MILLIS),
                 label = "headerScore",
             )
@@ -212,7 +212,7 @@ private fun ScoreHeader(state: CricketGameState) {
                         .width(UnderlineWidth * underline)
                         .height(3.dp)
                         .clip(RoundedCornerShape(2.dp))
-                        .background(Brand.Bull),
+                        .background(Brand.Ink),
                 )
             }
         }

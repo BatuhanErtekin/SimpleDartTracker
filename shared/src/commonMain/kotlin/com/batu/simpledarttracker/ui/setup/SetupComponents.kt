@@ -1,11 +1,27 @@
 package com.batu.simpledarttracker.ui.setup
 
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
+import com.batu.simpledarttracker.domain.game.GameMode
+import com.batu.simpledarttracker.ui.theme.Brand
+
+/**
+ * The colour a mode brings with it. [vivid] is for small, bright marks — a caption, an active
+ * segment — and [deep] fills whole cards, where a bright ground would fight the cream type.
+ */
+data class ModeAccent(val vivid: Color, val deep: Color)
+
+/** Green for X01, red for Cricket, amber for Training: the same three the wheel uses. */
+fun accentFor(mode: GameMode): ModeAccent = when (mode) {
+    GameMode.X01 -> ModeAccent(Brand.Green, Brand.GreenDeep)
+    GameMode.CRICKET -> ModeAccent(Brand.Red, Brand.RedDeep)
+    GameMode.TRAINING -> ModeAccent(Brand.Amber, Brand.AmberDeep)
+}
 
 /** The small all-caps heading above each group of options. */
 @Composable
@@ -18,12 +34,8 @@ fun SectionLabel(text: String) {
     )
 }
 
-/** Card colours shared by every selectable tile on the setup screen. */
+/** Card colours for a selectable tile, filled with [accent] once chosen. */
 @Composable
-fun setupTileColors(selected: Boolean): CardColors = CardDefaults.cardColors(
-    containerColor = if (selected) {
-        MaterialTheme.colorScheme.primaryContainer
-    } else {
-        MaterialTheme.colorScheme.surfaceVariant
-    },
+fun setupTileColors(selected: Boolean, accent: ModeAccent): CardColors = CardDefaults.cardColors(
+    containerColor = if (selected) accent.deep else MaterialTheme.colorScheme.surfaceVariant,
 )

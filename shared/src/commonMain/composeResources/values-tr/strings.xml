@@ -12,15 +12,8 @@
 
     <!-- Game modes -->
     <string name="mode_x01">X01</string>
-    <string name="mode_x01_subtitle">301, 501 ya da özel skor</string>
     <string name="mode_cricket">Cricket</string>
-    <string name="mode_cricket_subtitle">15–20 ve bull\'u kapat</string>
     <string name="mode_training">Antrenman</string>
-    <string name="mode_training_subtitle">Antrenman modları</string>
-
-    <!-- Home -->
-    <string name="home_history">Geçmiş</string>
-    <string name="home_history_subtitle">Oynanmış oyunlar ve istatistikler</string>
 
     <!-- Settings -->
     <string name="settings_title">Ayarlar</string>

@@ -12,15 +12,8 @@
 
     <!-- Game modes -->
     <string name="mode_x01">X01</string>
-    <string name="mode_x01_subtitle">301, 501 or a custom score</string>
     <string name="mode_cricket">Cricket</string>
-    <string name="mode_cricket_subtitle">Close 15–20 and the bull</string>
     <string name="mode_training">Training</string>
-    <string name="mode_training_subtitle">Practice drills</string>
-
-    <!-- Home -->
-    <string name="home_history">History</string>
-    <string name="home_history_subtitle">Past games and statistics</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>

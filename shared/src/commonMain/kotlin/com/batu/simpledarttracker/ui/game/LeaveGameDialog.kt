@@ -32,7 +32,7 @@ fun LeaveGameDialog(
         confirmButton = {
             TextButton(
                 onClick = onLeave,
-                colors = ButtonDefaults.textButtonColors(contentColor = Brand.Bull),
+                colors = ButtonDefaults.textButtonColors(contentColor = Brand.Red),
             ) {
                 Text(stringResource(Res.string.action_leave))
             }

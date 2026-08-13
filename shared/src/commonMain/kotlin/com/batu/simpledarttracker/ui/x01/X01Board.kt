@@ -95,8 +95,8 @@ fun X01Board(
             TurnControls(
                 slots = shown.currentDarts.map(::dartLabel),
                 badge = when (shownOutcome) {
-                    TurnOutcome.BUST -> OutcomeBadge(stringResource(Res.string.label_bust), Brand.Bull)
-                    TurnOutcome.WIN -> OutcomeBadge(stringResource(Res.string.label_checkout), Brand.Spruce)
+                    TurnOutcome.BUST -> OutcomeBadge(stringResource(Res.string.label_bust), Brand.Red)
+                    TurnOutcome.WIN -> OutcomeBadge(stringResource(Res.string.label_checkout), Brand.Green)
                     else -> null
                 },
                 canUndo = canUndo,
@@ -165,8 +165,8 @@ private fun x01Keys(): List<DartKeySpec<Dart>> {
                         label = n.toString(),
                         value = Dart.Segment(n, Ring.SINGLE),
                         options = listOf(
-                            KeyOption("D", Brand.Spruce, Dart.Segment(n, Ring.DOUBLE), "$doubleWord (${n * 2})"),
-                            KeyOption("T", Brand.Bull, Dart.Segment(n, Ring.TRIPLE), "$tripleWord (${n * 3})"),
+                            KeyOption("D", Brand.Green, Dart.Segment(n, Ring.DOUBLE), "$doubleWord (${n * 2})"),
+                            KeyOption("T", Brand.Red, Dart.Segment(n, Ring.TRIPLE), "$tripleWord (${n * 3})"),
                         ),
                     ),
                 )
@@ -177,7 +177,7 @@ private fun x01Keys(): List<DartKeySpec<Dart>> {
                 label = bullWord,
                 value = Dart.Bull,
                 options = listOf(
-                    KeyOption("D", Brand.Spruce, Dart.DoubleBull, "$doubleBullWord (50)", KEY_WIDE_OPTION_WEIGHT),
+                    KeyOption("D", Brand.Green, Dart.DoubleBull, "$doubleBullWord (50)", KEY_WIDE_OPTION_WEIGHT),
                 ),
             ),
         )

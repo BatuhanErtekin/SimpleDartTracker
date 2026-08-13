@@ -97,9 +97,9 @@ fun CricketBoard(
                 },
                 badge = when {
                     CricketEngine.outcomeOf(shown) == TurnOutcome.WIN ->
-                        OutcomeBadge(stringResource(Res.string.label_checkout), Brand.Spruce)
+                        OutcomeBadge(stringResource(Res.string.label_checkout), Brand.Green)
                     shown.houseClaimed ->
-                        OutcomeBadge(stringResource(Res.string.label_house), Brand.Bull)
+                        OutcomeBadge(stringResource(Res.string.label_house), Brand.Red)
                     else -> null
                 },
                 canUndo = canUndo,
