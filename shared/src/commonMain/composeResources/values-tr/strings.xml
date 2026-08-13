@@ -25,17 +25,33 @@
     <!-- Settings -->
     <string name="settings_title">Ayarlar</string>
     <string name="settings_theme">Tema</string>
+    <string name="settings_change_player_order">Oyuncu sırasını değiştir</string>
+    <string name="settings_reorder_hint">Sürüklemek için oyuncuya basılı tut.</string>
+    <string name="action_close">Kapat</string>
     <string name="settings_default_rules">Varsayılan kurallar</string>
 
     <!-- X01 rules -->
-    <string name="x01_title">X01</string>
     <string name="rules_starting_score">Başlangıç skoru</string>
     <string name="rules_out_mode">Bitiş kuralı</string>
     <string name="out_double">Double out</string>
     <string name="out_straight">Straight out</string>
     <string name="preset_custom">Özel</string>
-    <string name="x01_tap_to_start">Başlamak için dokun</string>
     <string name="action_start">Başla</string>
+
+    <!-- Cricket rules -->
+    <string name="preset_standard">Standart</string>
+    <string name="preset_random">Rastgele</string>
+    <string name="rules_targets">Hedefler</string>
+    <string name="label_house">House</string>
+    <string name="cricket_scoring">Puanlama</string>
+    <string name="cricket_scoring_plain">Cezasız</string>
+    <string name="cricket_scoring_penalty">Cezalı</string>
+    <string name="cricket_scoring_plain_hint">Yazdığın puanlar sana yazılır. En yüksek puan kazanır.</string>
+    <string name="cricket_scoring_penalty_hint">Yazdığın puanlar, o hedefi kapatmamış her rakibe yazılır. En düşük puan kazanır.</string>
+    <string name="cricket_pick_number">Hangi sayı?</string>
+    <string name="cricket_house_hint">Hedefi, sonra üç okun her birinin nereye girdiğini seç.</string>
+    <string name="cricket_no_targets">En az bir hedef seç.</string>
+    <string name="setup_unavailable">Bu mod henüz başlatılamıyor.</string>
 
     <!-- Players -->
     <string name="players_title">Oyuncular</string>
@@ -56,10 +72,16 @@
     <string name="action_continue">Tekrar oyna</string>
     <string name="game_winner">kazandı!</string>
     <string name="game_continue_question">Tekrar oynamak ister misiniz?</string>
+    <string name="game_leave_title">Oyundan çık</string>
+    <string name="game_leave_message">Oyundan çıkmak istediğinizden emin misiniz? Maç kaybolacak.</string>
+    <string name="action_leave">Çık</string>
+    <string name="action_cancel">İptal</string>
 
     <!-- Content descriptions -->
     <string name="cd_open_settings">Ayarları aç</string>
     <string name="cd_back">Geri</string>
     <string name="cd_decrease">Azalt</string>
     <string name="cd_increase">Artır</string>
+    <string name="cd_move_up">Yukarı taşı</string>
+    <string name="cd_move_down">Aşağı taşı</string>
 </resources>

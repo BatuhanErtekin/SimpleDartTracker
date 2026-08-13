@@ -1,12 +1,11 @@
-package com.batu.simpledarttracker.domain.engine
+package com.batu.simpledarttracker.domain.x01
 
+import com.batu.simpledarttracker.domain.game.GameStatus
+import com.batu.simpledarttracker.domain.game.TurnOutcome
+import com.batu.simpledarttracker.domain.game.winner
 import com.batu.simpledarttracker.domain.model.Dart
-import com.batu.simpledarttracker.domain.model.GameConfig
-import com.batu.simpledarttracker.domain.model.GameStatus
 import com.batu.simpledarttracker.domain.model.Player
 import com.batu.simpledarttracker.domain.model.Ring
-import com.batu.simpledarttracker.domain.model.TurnOutcome
-import com.batu.simpledarttracker.domain.model.X01GameState
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -17,7 +16,7 @@ class X01EngineTest {
     private val bob = Player("p2", "Bob")
 
     private fun game(startingScore: Int, doubleOut: Boolean = true) =
-        X01Engine.newGame(GameConfig(startingScore, doubleOut), listOf(alice, bob))
+        X01Engine.newGame(X01Config(startingScore, doubleOut), listOf(alice, bob))
 
     private fun X01GameState.stage(vararg darts: Dart): X01GameState =
         darts.fold(this) { s, d -> X01Engine.throwDart(s, d) }
@@ -71,13 +70,6 @@ class X01EngineTest {
     }
 
     @Test
-    fun undoRemovesLastDart() {
-        val state = X01Engine.undoLastDart(game(501).stage(triple(20), triple(20)))
-        assertEquals(1, state.currentDarts.size)
-        assertEquals(501 - 60, state.currentRemaining)
-    }
-
-    @Test
     fun bustDetectedImmediatelyButAppliedOnConfirm() {
         val staged = game(20).stage(triple(20)) // 60 > 20
         assertEquals(TurnOutcome.BUST, X01Engine.outcomeOf(staged))
@@ -112,7 +104,7 @@ class X01EngineTest {
     @Test
     fun checkoutOnDoubleFinishesOnConfirm() {
         val staged = game(40).stage(double(20))
-        assertEquals(TurnOutcome.CHECKOUT, X01Engine.outcomeOf(staged))
+        assertEquals(TurnOutcome.WIN, X01Engine.outcomeOf(staged))
         assertEquals(GameStatus.IN_PROGRESS, staged.status) // not over until confirmed
 
         val confirmed = staged.confirm()
@@ -132,14 +124,14 @@ class X01EngineTest {
     @Test
     fun straightOutAllowsFinishingOnSingle() {
         val staged = game(20, doubleOut = false).stage(single(20))
-        assertEquals(TurnOutcome.CHECKOUT, X01Engine.outcomeOf(staged))
+        assertEquals(TurnOutcome.WIN, X01Engine.outcomeOf(staged))
         assertEquals(GameStatus.FINISHED, staged.confirm().status)
     }
 
     @Test
     fun checkoutMidTurnBlocksThirdDart() {
         val staged = game(100).stage(triple(20), double(20)) // 60 then 40 → checkout on dart two
-        assertEquals(TurnOutcome.CHECKOUT, X01Engine.outcomeOf(staged))
+        assertEquals(TurnOutcome.WIN, X01Engine.outcomeOf(staged))
         val blocked = X01Engine.throwDart(staged, single(1))
         assertEquals(staged, blocked)
         assertEquals(2, staged.confirm().players[0].turns.first().darts.size)
@@ -150,7 +142,6 @@ class X01EngineTest {
         val finished = game(40).stage(double(20)).confirm()
         assertEquals(finished, X01Engine.throwDart(finished, triple(20)))
         assertEquals(finished, X01Engine.confirmTurn(finished))
-        assertEquals(finished, X01Engine.undoLastDart(finished))
     }
 
     @Test
@@ -166,6 +157,42 @@ class X01EngineTest {
         assertEquals(1, state.currentPlayerIndex)
         state = state.stage(single(1), single(1), single(1)).confirm()
         assertEquals(0, state.currentPlayerIndex)
+    }
+
+    @Test
+    fun movingAPlayerKeepsTheThrowWithTheSamePerson() {
+        val state = game(501).stage(triple(20), triple(20), triple(20)).confirm() // Bob to throw
+        assertEquals(bob, state.currentPlayer.player)
+
+        val moved = X01Engine.movePlayer(state, fromIndex = 1, toIndex = 0)
+        assertEquals(listOf(bob, alice), moved.players.map { it.player })
+        assertEquals(bob, moved.currentPlayer.player) // followed Bob to his new seat
+        assertEquals(0, moved.currentPlayerIndex)
+    }
+
+    @Test
+    fun movingAnotherPlayerDoesNotStealTheThrow() {
+        val state = game(501) // Alice to throw, seat 0
+        val moved = X01Engine.movePlayer(state, fromIndex = 1, toIndex = 0)
+        assertEquals(listOf(bob, alice), moved.players.map { it.player })
+        assertEquals(alice, moved.currentPlayer.player)
+        assertEquals(1, moved.currentPlayerIndex)
+    }
+
+    @Test
+    fun movingKeepsScoresWithTheirPlayer() {
+        val state = game(501).stage(triple(20), triple(20), triple(20)).confirm() // Alice 321
+        val moved = X01Engine.movePlayer(state, fromIndex = 0, toIndex = 1)
+        assertEquals(321, moved.players.first { it.player == alice }.remaining)
+        assertEquals(501, moved.players.first { it.player == bob }.remaining)
+    }
+
+    @Test
+    fun movingWithBadIndicesIsIgnored() {
+        val state = game(501)
+        assertEquals(state, X01Engine.movePlayer(state, fromIndex = 0, toIndex = 0))
+        assertEquals(state, X01Engine.movePlayer(state, fromIndex = -1, toIndex = 1))
+        assertEquals(state, X01Engine.movePlayer(state, fromIndex = 0, toIndex = 5))
     }
 
     @Test

@@ -10,4 +10,5 @@ object Brand {
     val Spruce = Color(0xFF206B45)  // dartboard green · primary
     val Bull = Color(0xFFD8412F)    // bull red · accent
     val Wire = Color(0xFF8A938C)    // spider-wire grey · neutral
+    val Key = Color(0xFF243129)     // raised key / card on the arena
 }

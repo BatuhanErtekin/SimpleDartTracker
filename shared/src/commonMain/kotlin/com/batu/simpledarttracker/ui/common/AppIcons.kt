@@ -30,7 +30,22 @@ fun HamburgerIcon(
     }
 }
 
-/** Back (chevron) icon. */
+/** The classic vertical three-dot overflow icon. */
+@Composable
+fun MoreIcon(
+    color: Color,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+) {
+    Canvas(modifier.withDescription(contentDescription)) {
+        val radius = size.minDimension * 0.085f
+        listOf(0.22f, 0.5f, 0.78f).forEach { fy ->
+            drawCircle(color, radius = radius, center = Offset(size.width / 2f, size.height * fy))
+        }
+    }
+}
+
+/** Back (chevron) icon. Rotate it a quarter turn to point up or down. */
 @Composable
 fun BackIcon(
     color: Color,

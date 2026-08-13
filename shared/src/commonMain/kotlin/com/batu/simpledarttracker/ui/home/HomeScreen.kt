@@ -34,7 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.batu.simpledarttracker.domain.model.GameMode
+import com.batu.simpledarttracker.domain.game.GameMode
 import com.batu.simpledarttracker.ui.brand.DartMark
 import com.batu.simpledarttracker.ui.common.HamburgerIcon
 import kotlinx.coroutines.launch

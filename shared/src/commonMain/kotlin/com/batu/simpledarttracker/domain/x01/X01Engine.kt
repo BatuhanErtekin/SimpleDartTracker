@@ -1,26 +1,23 @@
-package com.batu.simpledarttracker.domain.engine
+package com.batu.simpledarttracker.domain.x01
 
+import com.batu.simpledarttracker.domain.game.GameStatus
+import com.batu.simpledarttracker.domain.game.TurnEngine
+import com.batu.simpledarttracker.domain.game.TurnOutcome
 import com.batu.simpledarttracker.domain.model.Dart
-import com.batu.simpledarttracker.domain.model.GameConfig
-import com.batu.simpledarttracker.domain.model.GameStatus
 import com.batu.simpledarttracker.domain.model.Player
 import com.batu.simpledarttracker.domain.model.Turn
-import com.batu.simpledarttracker.domain.model.TurnOutcome
-import com.batu.simpledarttracker.domain.model.X01GameState
-import com.batu.simpledarttracker.domain.model.X01PlayerState
 
 /**
  * Pure engine for the X01 (501/301/…) rules. Independent of the UI.
  *
- * Flow: the player *stages* up to three darts with [throwDart] (nothing is applied yet)
- * and can take them back with [undoLastDart]; [confirmTurn] applies the turn and passes
- * the throw on. A bust or checkout is recognised by [outcomeOf] the moment the dart lands
- * and further darts are blocked, but the score only changes on confirmation.
+ * It follows the shared [TurnEngine] protocol: darts are staged, taken back, then confirmed.
+ * A bust or checkout is recognised by [outcomeOf] the moment the dart lands and further darts
+ * are blocked, but the score only changes on confirmation.
  */
-object X01Engine {
+object X01Engine : TurnEngine<X01GameState, Dart> {
 
     /** Starts a new game with the given configuration and players. */
-    fun newGame(config: GameConfig, players: List<Player>): X01GameState {
+    fun newGame(config: X01Config, players: List<Player>): X01GameState {
         require(players.isNotEmpty()) { "A game needs at least one player" }
         return X01GameState(
             config = config,
@@ -28,8 +25,25 @@ object X01Engine {
         )
     }
 
-    /** State of the turn in progress, based on the staged darts. */
-    fun outcomeOf(state: X01GameState): TurnOutcome {
+    /**
+     * Moves a player to a different seat. The throw stays with whoever currently holds it, so
+     * the order can be corrected mid-match without skipping anyone. Out-of-range indices and
+     * no-op moves leave the state untouched.
+     */
+    fun movePlayer(state: X01GameState, fromIndex: Int, toIndex: Int): X01GameState {
+        if (fromIndex !in state.players.indices) return state
+        if (toIndex !in state.players.indices) return state
+        if (fromIndex == toIndex) return state
+
+        val throwerId = state.currentPlayer.player.id
+        val reordered = state.players.toMutableList().apply { add(toIndex, removeAt(fromIndex)) }
+        return state.copy(
+            players = reordered,
+            currentPlayerIndex = reordered.indexOfFirst { it.player.id == throwerId },
+        )
+    }
+
+    override fun outcomeOf(state: X01GameState): TurnOutcome {
         val doubleOut = state.config.doubleOut
         var remaining = state.currentPlayer.remaining
         for (dart in state.currentDarts) {
@@ -40,30 +54,18 @@ object X01Engine {
                 remaining < 0
             }
             if (bust) return TurnOutcome.BUST
-            if (remaining == 0) return TurnOutcome.CHECKOUT
+            if (remaining == 0) return TurnOutcome.WIN
         }
         return if (state.currentDarts.size >= 3) TurnOutcome.COMPLETE else TurnOutcome.ONGOING
     }
 
-    /** Stages one dart. Ignored once the turn is settled (three darts, bust or checkout). */
-    fun throwDart(state: X01GameState, dart: Dart): X01GameState {
+    override fun throwDart(state: X01GameState, input: Dart): X01GameState {
         if (state.status != GameStatus.IN_PROGRESS) return state
         if (outcomeOf(state) != TurnOutcome.ONGOING) return state
-        return state.copy(currentDarts = state.currentDarts + dart)
+        return state.copy(currentDarts = state.currentDarts + input)
     }
 
-    /** Takes back the last staged (unconfirmed) dart. */
-    fun undoLastDart(state: X01GameState): X01GameState {
-        if (state.status != GameStatus.IN_PROGRESS) return state
-        if (state.currentDarts.isEmpty()) return state
-        return state.copy(currentDarts = state.currentDarts.dropLast(1))
-    }
-
-    /**
-     * Confirms the turn: applies the score and, unless the game is over, passes the throw on.
-     * Does nothing while the turn is unsettled ([TurnOutcome.ONGOING]).
-     */
-    fun confirmTurn(state: X01GameState): X01GameState {
+    override fun confirmTurn(state: X01GameState): X01GameState {
         if (state.status != GameStatus.IN_PROGRESS) return state
         val outcome = outcomeOf(state)
         val player = state.currentPlayer
@@ -81,7 +83,7 @@ object X01Engine {
                 advance = true,
             )
 
-            TurnOutcome.CHECKOUT -> commitTurn(
+            TurnOutcome.WIN -> commitTurn(
                 state = state,
                 turn = Turn(player.player.id, darts, isBust = false),
                 newRemaining = 0,

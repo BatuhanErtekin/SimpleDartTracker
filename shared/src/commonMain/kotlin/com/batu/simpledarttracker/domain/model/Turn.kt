@@ -15,10 +15,15 @@ data class Turn(
     val scored: Int get() = if (isBust) 0 else darts.sumOf { it.value }
 
     /** True when all three darts landed on the same target (a "house"). */
-    val isHouse: Boolean
-        get() {
-            if (darts.size != 3) return false
-            val targets = darts.map { it.houseTarget }
-            return targets.none { it == null } && targets.toSet().size == 1
-        }
+    val isHouse: Boolean get() = isHouse(darts)
+}
+
+/**
+ * Whether [darts] form a house: three darts on one target. The ring does not matter — 20, D20
+ * and T20 are all the same target — but a miss has no target and so breaks it.
+ */
+fun isHouse(darts: List<Dart>): Boolean {
+    if (darts.size != 3) return false
+    val targets = darts.map { it.houseTarget }
+    return targets.none { it == null } && targets.toSet().size == 1
 }
