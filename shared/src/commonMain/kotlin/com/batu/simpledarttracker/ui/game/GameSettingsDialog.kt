@@ -71,7 +71,7 @@ fun GameSettingsDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = Brand.Slate2,
+        containerColor = Brand.Panel,
         titleContentColor = Brand.Chalk,
         textContentColor = Brand.Chalk,
         title = {
@@ -84,7 +84,7 @@ fun GameSettingsDialog(
         confirmButton = {
             TextButton(
                 onClick = onDismiss,
-                colors = ButtonDefaults.textButtonColors(contentColor = Brand.Green),
+                colors = ButtonDefaults.textButtonColors(contentColor = Brand.Gold),
             ) {
                 Text(stringResource(Res.string.action_close))
             }
@@ -244,8 +244,8 @@ private fun PlayerOrderRow(
             .clip(RoundedCornerShape(10.dp))
             .background(
                 when {
-                    isDragged -> Brand.Green.copy(alpha = 0.85f)
-                    isThrowing -> Brand.Green
+                    isDragged -> Brand.Gold.copy(alpha = 0.85f)
+                    isThrowing -> Brand.Gold
                     else -> Brand.Key
                 },
             )

@@ -57,7 +57,7 @@ fun RingPickerDialog(
     val ring = if (target == CricketTarget.AnyTriple) Ring.TRIPLE else Ring.DOUBLE
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = Brand.Slate2,
+        containerColor = Brand.Panel,
         titleContentColor = Brand.Chalk,
         textContentColor = Brand.Chalk,
         title = { Text(stringResource(Res.string.cricket_pick_number)) },
@@ -119,7 +119,7 @@ fun HousePickerDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = Brand.Slate2,
+        containerColor = Brand.Panel,
         titleContentColor = Brand.Chalk,
         textContentColor = Brand.Chalk,
         title = { Text(stringResource(Res.string.label_house)) },
@@ -127,7 +127,7 @@ fun HousePickerDialog(
             TextButton(
                 onClick = { onPicked(darts) },
                 enabled = chosen,
-                colors = ButtonDefaults.textButtonColors(contentColor = Brand.Green),
+                colors = ButtonDefaults.textButtonColors(contentColor = Brand.Gold),
             ) {
                 Text(stringResource(Res.string.action_confirm))
             }
@@ -227,7 +227,7 @@ private fun PickerChip(
         modifier = modifier
             .height(40.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(if (selected) Brand.Green else Brand.Key)
+            .background(if (selected) Brand.Gold else Brand.Key)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {

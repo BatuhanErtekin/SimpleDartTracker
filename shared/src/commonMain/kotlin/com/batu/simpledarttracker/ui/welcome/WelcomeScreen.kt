@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.batu.simpledarttracker.ui.brand.DartMark
+import com.batu.simpledarttracker.ui.theme.BrandButton
+import com.batu.simpledarttracker.ui.theme.BrandOutlineButton
 import org.jetbrains.compose.resources.stringResource
 import simpledarttracker.shared.generated.resources.Res
 import simpledarttracker.shared.generated.resources.app_name
@@ -42,13 +42,7 @@ fun WelcomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        DartMark(
-            lineColor = MaterialTheme.colorScheme.onBackground,
-            greenColor = MaterialTheme.colorScheme.primary,
-            redColor = MaterialTheme.colorScheme.secondary,
-            haloColor = MaterialTheme.colorScheme.background,
-            modifier = Modifier.size(96.dp),
-        )
+        DartMark(modifier = Modifier.size(96.dp))
         Spacer(Modifier.height(16.dp))
         Text(
             text = stringResource(Res.string.app_name),
@@ -65,19 +59,17 @@ fun WelcomeScreen(
         Spacer(Modifier.height(48.dp))
 
         // Disabled for now — Google sign-in comes later.
-        OutlinedButton(
+        BrandOutlineButton(
+            text = stringResource(Res.string.welcome_google_signin),
             onClick = onGoogleSignIn,
             enabled = false,
             modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(stringResource(Res.string.welcome_google_signin))
-        }
+        )
         Spacer(Modifier.height(12.dp))
-        Button(
+        BrandButton(
+            text = stringResource(Res.string.welcome_continue_guest),
             onClick = onContinueAsGuest,
             modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(stringResource(Res.string.welcome_continue_guest))
-        }
+        )
     }
 }

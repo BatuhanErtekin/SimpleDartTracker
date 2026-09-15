@@ -78,7 +78,7 @@ fun X01Board(
     AppScaffold(
         title = "${state.config.startingScore} · $outLabel",
         modifier = modifier,
-        containerColor = Brand.Slate,
+        containerColor = Brand.Night,
         contentColor = Brand.Chalk,
         // Mid-match the top-left is settings, not back: leaving is the system back gesture's
         // job, so the corner can hold something useful during play.
@@ -95,8 +95,8 @@ fun X01Board(
             TurnControls(
                 slots = shown.currentDarts.map(::dartLabel),
                 badge = when (shownOutcome) {
-                    TurnOutcome.BUST -> OutcomeBadge(stringResource(Res.string.label_bust), Brand.Red)
-                    TurnOutcome.WIN -> OutcomeBadge(stringResource(Res.string.label_checkout), Brand.Green)
+                    TurnOutcome.BUST -> OutcomeBadge(stringResource(Res.string.label_bust), Brand.Ember)
+                    TurnOutcome.WIN -> OutcomeBadge(stringResource(Res.string.label_checkout), Brand.Gold)
                     else -> null
                 },
                 canUndo = canUndo,
@@ -165,8 +165,8 @@ private fun x01Keys(): List<DartKeySpec<Dart>> {
                         label = n.toString(),
                         value = Dart.Segment(n, Ring.SINGLE),
                         options = listOf(
-                            KeyOption("D", Brand.Green, Dart.Segment(n, Ring.DOUBLE), "$doubleWord (${n * 2})"),
-                            KeyOption("T", Brand.Red, Dart.Segment(n, Ring.TRIPLE), "$tripleWord (${n * 3})"),
+                            KeyOption("D", Brand.Gold, Dart.Segment(n, Ring.DOUBLE), "$doubleWord (${n * 2})"),
+                            KeyOption("T", Brand.Ember, Dart.Segment(n, Ring.TRIPLE), "$tripleWord (${n * 3})"),
                         ),
                     ),
                 )
@@ -177,7 +177,7 @@ private fun x01Keys(): List<DartKeySpec<Dart>> {
                 label = bullWord,
                 value = Dart.Bull,
                 options = listOf(
-                    KeyOption("D", Brand.Green, Dart.DoubleBull, "$doubleBullWord (50)", KEY_WIDE_OPTION_WEIGHT),
+                    KeyOption("D", Brand.Gold, Dart.DoubleBull, "$doubleBullWord (50)", KEY_WIDE_OPTION_WEIGHT),
                 ),
             ),
         )

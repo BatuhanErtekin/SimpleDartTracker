@@ -27,8 +27,9 @@ import simpledarttracker.shared.generated.resources.cd_back
  * that keeps its content clear of the navigation bar while its background still runs to the
  * screen edge.
  *
- * [containerColor] defaults to the theme background; the game board overrides it so the whole
- * arena is one colour. Screens that want something other than a back arrow in the top-left —
+ * [containerColor] is transparent by default so the painted page (see Backdrop.kt) shows through
+ * — a scaffold that fills with the theme background hides it completely. The game board overrides
+ * it, because a board wants one flat colour under the numbers rather than a lit room. Screens that want something other than a back arrow in the top-left —
  * the board puts its settings button there — pass their own [navigationIcon].
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,7 +38,7 @@ fun AppScaffold(
     title: String,
     modifier: Modifier = Modifier,
     onBack: (() -> Unit)? = null,
-    containerColor: Color = MaterialTheme.colorScheme.background,
+    containerColor: Color = Color.Transparent,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     navigationIcon: @Composable () -> Unit = {
         if (onBack != null) {

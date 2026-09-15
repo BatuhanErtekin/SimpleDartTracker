@@ -16,11 +16,11 @@ import com.batu.simpledarttracker.ui.theme.Brand
  */
 data class ModeAccent(val vivid: Color, val deep: Color)
 
-/** Green for X01, red for Cricket, amber for Training: the same three the wheel uses. */
+/** Green for X01, red for Cricket, turquoise for Training: the same three the wheel uses. */
 fun accentFor(mode: GameMode): ModeAccent = when (mode) {
-    GameMode.X01 -> ModeAccent(Brand.Green, Brand.GreenDeep)
-    GameMode.CRICKET -> ModeAccent(Brand.Red, Brand.RedDeep)
-    GameMode.TRAINING -> ModeAccent(Brand.Amber, Brand.AmberDeep)
+    GameMode.X01 -> ModeAccent(Brand.Gold, Brand.GoldDeep)
+    GameMode.CRICKET -> ModeAccent(Brand.Ember, Brand.EmberDeep)
+    GameMode.TRAINING -> ModeAccent(Brand.Honey, Brand.HoneyDeep)
 }
 
 /** The small all-caps heading above each group of options. */

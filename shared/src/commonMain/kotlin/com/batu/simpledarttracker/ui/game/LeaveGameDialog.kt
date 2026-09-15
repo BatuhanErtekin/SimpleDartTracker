@@ -24,7 +24,7 @@ fun LeaveGameDialog(
 ) {
     AlertDialog(
         onDismissRequest = onCancel,
-        containerColor = Brand.Slate2,
+        containerColor = Brand.Panel,
         titleContentColor = Brand.Chalk,
         textContentColor = Brand.Chalk,
         title = { Text(stringResource(Res.string.game_leave_title)) },
@@ -32,7 +32,7 @@ fun LeaveGameDialog(
         confirmButton = {
             TextButton(
                 onClick = onLeave,
-                colors = ButtonDefaults.textButtonColors(contentColor = Brand.Red),
+                colors = ButtonDefaults.textButtonColors(contentColor = Brand.Ember),
             ) {
                 Text(stringResource(Res.string.action_leave))
             }

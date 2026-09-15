@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.batu.simpledarttracker.domain.game.GameMode
@@ -61,9 +62,9 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
 
     val sectors = listOf(
-        WheelSector(GameMode.X01, stringResource(Res.string.mode_x01), Brand.Green),
-        WheelSector(GameMode.CRICKET, stringResource(Res.string.mode_cricket), Brand.Red),
-        WheelSector(GameMode.TRAINING, stringResource(Res.string.mode_training), Brand.Amber),
+        WheelSector(GameMode.X01, stringResource(Res.string.mode_x01), Brand.Gold),
+        WheelSector(GameMode.TRAINING, stringResource(Res.string.mode_training), Brand.Honey),
+        WheelSector(GameMode.CRICKET, stringResource(Res.string.mode_cricket), Brand.Ember),
     )
 
     ModalNavigationDrawer(
@@ -72,6 +73,7 @@ fun HomeScreen(
         drawerContent = { SettingsDrawer() },
     ) {
         Scaffold(
+            containerColor = Color.Transparent,
             topBar = {
                 TopAppBar(
                     title = {
@@ -79,13 +81,7 @@ fun HomeScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
                         ) {
-                            DartMark(
-                                lineColor = MaterialTheme.colorScheme.onSurface,
-                                greenColor = MaterialTheme.colorScheme.primary,
-                                redColor = MaterialTheme.colorScheme.secondary,
-                                haloColor = MaterialTheme.colorScheme.surface,
-                                modifier = Modifier.size(28.dp),
-                            )
+                            DartMark(modifier = Modifier.size(28.dp))
                             Text(
                                 text = stringResource(Res.string.app_name),
                                 style = MaterialTheme.typography.titleMedium,

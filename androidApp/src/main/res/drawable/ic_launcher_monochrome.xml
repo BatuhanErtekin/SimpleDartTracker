@@ -3,13 +3,27 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <path android:pathData="M26.64,54.0 a27.36,27.36 0 1 0 54.72,0 a27.36,27.36 0 1 0 -54.72,0" android:strokeColor="#FFFFFF" android:strokeWidth="1.152" />
-    <path android:pathData="M38.52,54.0 a15.48,15.48 0 1 0 30.96,0 a15.48,15.48 0 1 0 -30.96,0" android:strokeColor="#FFFFFF" android:strokeWidth="2.304" />
-    <path android:pathData="M47.952,54.0 a6.048,6.048 0 1 0 12.096,0 a6.048,6.048 0 1 0 -12.096,0" android:strokeColor="#FFFFFF" android:strokeWidth="1.728" />
-    <path android:pathData="M51.264,54.0 a2.736,2.736 0 1 0 5.472,0 a2.736,2.736 0 1 0 -5.472,0" android:fillColor="#FFFFFF" />
-    <group android:rotation="-45" android:pivotX="54" android:pivotY="54">
-        <path android:pathData="M68.4,54.0 L81.36,48.96 L81.36,59.04 Z" android:fillColor="#FFFFFF" />
-        <path android:pathData="M54.0,54.0 L69.84,54.0" android:strokeColor="#FFFFFF" android:strokeWidth="2.16" android:strokeLineCap="round" />
-        <path android:pathData="M52.488,54.0 a1.512,1.512 0 1 0 3.024,0 a1.512,1.512 0 1 0 -3.024,0" android:fillColor="#FFFFFF" />
+    <group android:pivotX="54" android:pivotY="54" android:scaleX="0.9" android:scaleY="0.9">
+        <!-- One colour, so the dart runs behind the tankard and shows at both ends. -->
+        <group android:translateX="54" android:translateY="54" android:rotation="-36">
+            <path android:pathData="M-38,0 L-23,-2.6 L-23,2.6 Z"
+                android:fillColor="#FFFFFF" />
+            <path android:pathData="M-20.6,-3.9 h20.2 a3.4,3.4 0 0 1 3.4,3.4 v1.0 a3.4,3.4 0 0 1 -3.4,3.4 h-20.2 a3.4,3.4 0 0 1 -3.4,-3.4 v-1.0 a3.4,3.4 0 0 1 3.4,-3.4 Z"
+                android:fillColor="#FFFFFF" />
+            <path android:pathData="M4.7,-1.7 h6.6 a1.7,1.7 0 0 1 1.7,1.7 v0.0 a1.7,1.7 0 0 1 -1.7,1.7 h-6.6 a1.7,1.7 0 0 1 -1.7,-1.7 v-0.0 a1.7,1.7 0 0 1 1.7,-1.7 Z"
+                android:fillColor="#FFFFFF" />
+            <path android:pathData="M12,0 L17.5,-7.6 L34,-6.6 L34,6.6 L17.5,7.6 Z"
+                android:fillColor="#FFFFFF" />
+        </group>
+        <group android:pivotX="54" android:pivotY="55" android:scaleX="0.88" android:scaleY="0.88">
+            <path android:pathData="M64,44 L80,44 L80,72 L64,72"
+                android:strokeColor="#FFFFFF"
+                android:strokeWidth="8"
+                android:strokeLineJoin="round" />
+            <path android:pathData="M39,33 L71,33 Q76,58 71,86 L39,86 Q34,58 39,33 Z"
+                android:fillColor="#FFFFFF" />
+            <path android:pathData="M36.5,33 C36.5,27.5 38.5,23 43,23 C46,19.5 50,17.5 55,17.5 C60,17.5 65,19.5 67,24 C69.5,23 73.5,27.5 73.5,33 Z"
+                android:fillColor="#FFFFFF" />
+        </group>
     </group>
 </vector>

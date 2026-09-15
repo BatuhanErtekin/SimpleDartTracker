@@ -22,13 +22,13 @@ fun WinnerDialog(
 ) {
     AlertDialog(
         onDismissRequest = {},
-        containerColor = Brand.Slate2,
+        containerColor = Brand.Panel,
         titleContentColor = Brand.Chalk,
         textContentColor = Brand.Chalk,
         confirmButton = {
             TextButton(
                 onClick = onPlayAgain,
-                colors = ButtonDefaults.textButtonColors(contentColor = Brand.Green),
+                colors = ButtonDefaults.textButtonColors(contentColor = Brand.Gold),
             ) {
                 Text(stringResource(Res.string.action_continue))
             }

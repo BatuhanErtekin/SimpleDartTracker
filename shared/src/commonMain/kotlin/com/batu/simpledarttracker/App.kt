@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.batu.simpledarttracker.domain.game.GameMode
@@ -21,11 +22,13 @@ import com.batu.simpledarttracker.ui.game.LeaveGameDialog
 import com.batu.simpledarttracker.ui.home.HomeScreen
 import com.batu.simpledarttracker.ui.navigation.NavigationViewModel
 import com.batu.simpledarttracker.ui.navigation.PlatformBackHandler
+import com.batu.simpledarttracker.ui.platform.KeepScreenAwake
 import com.batu.simpledarttracker.ui.navigation.Screen
 import com.batu.simpledarttracker.ui.setup.GameSetupScreen
 import com.batu.simpledarttracker.ui.setup.MatchSetup
 import com.batu.simpledarttracker.ui.splash.SplashScreen
 import com.batu.simpledarttracker.ui.theme.AppTheme
+import com.batu.simpledarttracker.ui.theme.appBackdrop
 import com.batu.simpledarttracker.ui.welcome.WelcomeScreen
 import com.batu.simpledarttracker.ui.x01.X01Board
 import com.batu.simpledarttracker.ui.x01.X01ViewModel
@@ -39,6 +42,8 @@ import com.batu.simpledarttracker.ui.x01.X01ViewModel
 @Preview
 fun App() {
     AppTheme {
+        // The phone sits on the table while you throw; it should not lock itself between legs.
+        KeepScreenAwake()
         val navigation: NavigationViewModel = viewModel { NavigationViewModel() }
         val x01: X01ViewModel = viewModel { X01ViewModel() }
         val cricket: CricketViewModel = viewModel { CricketViewModel() }
@@ -64,9 +69,12 @@ fun App() {
             )
         }
 
+        // The page is painted rather than filled: see Backdrop.kt. The surface on top of it
+        // carries the content colour and nothing else.
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background,
+            modifier = Modifier.fillMaxSize().appBackdrop(),
+            color = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onBackground,
         ) {
             when (val screen = backStack.last()) {
                 Screen.Splash -> SplashScreen(

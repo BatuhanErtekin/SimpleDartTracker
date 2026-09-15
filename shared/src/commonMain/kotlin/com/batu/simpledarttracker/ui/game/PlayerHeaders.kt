@@ -115,7 +115,7 @@ private fun PlayerHeaderCard(
         label = "playerHeaderAlpha",
     )
     val container by animateColorAsState(
-        targetValue = if (isCurrent) Brand.Green else Brand.Key,
+        targetValue = if (isCurrent) Brand.Gold else Brand.Key,
         animationSpec = tween(TURN_ANIMATION_MILLIS),
         label = "playerHeaderContainer",
     )

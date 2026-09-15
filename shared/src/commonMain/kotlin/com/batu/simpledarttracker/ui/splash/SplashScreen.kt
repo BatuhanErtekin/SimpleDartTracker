@@ -59,16 +59,12 @@ fun SplashScreen(
     }
 
     Box(
-        modifier = modifier.fillMaxSize().background(Brand.Slate),
+        modifier = modifier.fillMaxSize().background(Brand.Night),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             DartMark(
-                lineColor = Brand.Chalk,
-                greenColor = Brand.Green,
-                redColor = Brand.Red,
-                haloColor = Brand.Slate,
-                ringsAppear = rings.value,
+                markAppear = rings.value,
                 dartAppear = dart.value,
                 modifier = Modifier.size(132.dp),
             )
@@ -108,7 +104,7 @@ fun SplashScreen(
                 modifier = Modifier
                     .fillMaxWidth(progress.value)
                     .fillMaxHeight()
-                    .background(Brand.Green, RoundedCornerShape(2.dp)),
+                    .background(Brand.Gold, RoundedCornerShape(2.dp)),
             )
         }
     }

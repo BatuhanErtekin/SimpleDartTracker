@@ -3,77 +3,180 @@ package com.batu.simpledarttracker.ui.brand
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 
+// The mark's own colours. They are deliberately not the app's palette: a logo does not follow
+// the theme, and the launcher drawables are cut from these same numbers. The launcher's own
+// ground colour is #141009, in ic_launcher_background.xml.
+private val Gold = Color(0xFFF0A828)
+private val Hoop = Color(0xFF9C5606)
+private val Foam = Color(0xFFF3EDDE)
+private val Barrel = Color(0xFF1B1B18)
+private val Accent = Color(0xFFFFD37A)
+
+// Everything below is measured in the 108x108 square the launcher icon is drawn in.
+private const val MARK = 1.12f              // the mark fills the box the ring used to leave room for
+private const val DART_AT = -36f            // the dart crosses the tankard on this diagonal
+private val GROOVES = listOf(-19f, -14.8f, -10.6f, -6.4f, -2.2f)
+
 /**
- * The Simple Dart Tracker logo: a bullseye reduced from a dartboard (thin outer circle,
- * a dashed ring hinting at the 20 segments, a green inner ring, a red bull) with a dart
- * stuck in the bull at 45°. Scaled inside a 100x100 design square.
+ * The Simple Dart Tracker mark: a tankard of beer with a dart driven straight through it.
  *
- * [ringsAppear] and [dartAppear] run from 0 to 1; the splash animation uses them to settle
- * the rings into place and fly the dart in (both default to 1 = fully visible).
+ * The dart is a Winmau MvG Evo-X — straight parallel barrel, rounded nose, full-length ring grip,
+ * gold groove accents — which is where the mark's gold comes from in the first place. The tankard
+ * is a barrel-bodied stein with a square handle behind it, drawn flat: no gradients, no outline
+ * on the glass, so the whole thing holds together at 32 pixels.
+ *
+ * [markAppear] and [dartAppear] run from 0 to 1; the splash animation settles the tankard into
+ * place with the first and drives the dart in along its own diagonal with the second.
  */
 @Composable
 fun DartMark(
-    lineColor: Color,
-    greenColor: Color,
-    redColor: Color,
-    haloColor: Color,
     modifier: Modifier = Modifier,
-    ringsAppear: Float = 1f,
+    markAppear: Float = 1f,
     dartAppear: Float = 1f,
 ) {
     Canvas(modifier) {
-        val unit = size.minDimension / 100f
-        val offX = (size.width - 100f * unit) / 2f
-        val offY = (size.height - 100f * unit) / 2f
+        val unit = size.minDimension / 108f
+        val offX = (size.width - 108f * unit) / 2f
+        val offY = (size.height - 108f * unit) / 2f
         fun pt(x: Float, y: Float) = Offset(offX + x * unit, offY + y * unit)
-        val center = pt(50f, 50f)
+        val centre = pt(54f, 54f)
 
-        // Rings: settle into place by scaling up slightly while fading in.
-        val ringsScale = 0.82f + 0.18f * ringsAppear
-        scale(ringsScale, ringsScale, center) {
-            drawCircle(lineColor, 38f * unit, center, alpha = ringsAppear, style = Stroke(1.6f * unit))
-            drawCircle(
-                lineColor, 34f * unit, center, alpha = ringsAppear,
-                style = Stroke(
-                    width = 4f * unit,
-                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(5.34f * unit, 5.34f * unit)),
-                ),
-            )
-            drawCircle(greenColor, 21.5f * unit, center, alpha = ringsAppear, style = Stroke(3.2f * unit))
-            drawCircle(greenColor, 8.4f * unit, center, alpha = ringsAppear, style = Stroke(2.4f * unit))
-            drawCircle(redColor, 3.8f * unit, center, alpha = ringsAppear)
+        // The mark settles into place by scaling up slightly while it fades in. There is no
+        // badge behind it: the ring that used to be there read as fussy, and the page's own
+        // ground does the job.
+        val settle = MARK * (0.92f + 0.08f * markAppear)
+        scale(settle, settle, centre) {
+            scale(0.88f, 0.88f, pt(54f, 55f)) {
+                tankard(::pt, unit, markAppear)
+            }
         }
 
-        // Dart: flies in from the top right (dartAppear=0) and sticks in the bull (dartAppear=1).
-        val dx = 28f * unit * (1f - dartAppear)
-        val dy = -28f * unit * (1f - dartAppear)
-        translate(dx, dy) {
-            rotate(-45f, center) {
-                // The halo separates the dart from the board behind it.
-                drawLine(haloColor, pt(50f, 50f), pt(73f, 50f), strokeWidth = 6.5f * unit, cap = StrokeCap.Round, alpha = dartAppear)
-                drawPath(triangle(pt(69f, 50f), pt(90f, 42f), pt(90f, 58f)), haloColor, alpha = dartAppear)
-                // Flight and shaft.
-                drawPath(triangle(pt(70f, 50f), pt(88f, 43f), pt(88f, 57f)), redColor, alpha = dartAppear)
-                drawLine(lineColor, pt(50f, 50f), pt(72f, 50f), strokeWidth = 3f * unit, cap = StrokeCap.Round, alpha = dartAppear)
-                drawCircle(lineColor, 2.1f * unit, pt(50f, 50f), alpha = dartAppear)
+        // The dart flies in along its own diagonal, from outside the mark.
+        val flyIn = 46f * (1f - dartAppear)
+        scale(MARK, MARK, centre) {
+            rotate(DART_AT, centre) {
+                translate(flyIn * unit, 0f) {
+                    dart(centre, unit, dartAppear)
+                }
             }
         }
     }
 }
 
-private fun triangle(a: Offset, b: Offset, c: Offset) = Path().apply {
-    moveTo(a.x, a.y)
-    lineTo(b.x, b.y)
-    lineTo(c.x, c.y)
-    close()
+/** The tankard: handle behind the body, two hoops across it, and the head on top. */
+private fun DrawScope.tankard(pt: (Float, Float) -> Offset, unit: Float, alpha: Float) {
+    val handle = Path().apply {
+        moveTo(pt(64f, 44f))
+        lineTo(pt(80f, 44f))
+        lineTo(pt(80f, 72f))
+        lineTo(pt(64f, 72f))
+    }
+    drawPath(handle, Gold, alpha = alpha, style = Stroke(8f * unit, join = StrokeJoin.Round))
+
+    val body = Path().apply {
+        moveTo(pt(39f, 33f))
+        lineTo(pt(71f, 33f))
+        quadraticTo(pt(76f, 58f), pt(71f, 86f))
+        lineTo(pt(39f, 86f))
+        quadraticTo(pt(34f, 58f), pt(39f, 33f))
+        close()
+    }
+    drawPath(body, Gold, alpha = alpha)
+
+    listOf(45f, 66f).forEach { y ->
+        drawRect(Hoop, pt(35f, y), Size(40f * unit, 4.5f * unit), alpha = alpha)
+    }
+
+    // The head, as four curves off the rim.
+    val foam = Path().apply {
+        moveTo(pt(36.5f, 33f))
+        cubicTo(pt(36.5f, 27.5f), pt(38.5f, 23f), pt(43f, 23f))
+        cubicTo(pt(46f, 19.5f), pt(50f, 17.5f), pt(55f, 17.5f))
+        cubicTo(pt(60f, 17.5f), pt(65f, 19.5f), pt(67f, 24f))
+        cubicTo(pt(69.5f, 23f), pt(73.5f, 27.5f), pt(73.5f, 33f))
+        close()
+    }
+    drawPath(foam, Foam, alpha = alpha)
 }
+
+/** The dart, lying along +x from [centre]: needle, barrel, grip rings, shaft, flight. */
+private fun DrawScope.dart(centre: Offset, unit: Float, alpha: Float) {
+    fun at(x: Float, y: Float) = Offset(centre.x + x * unit, centre.y + y * unit)
+    fun box(x: Float, y: Float, w: Float, h: Float, r: Float = 0f, colour: Color = Barrel) =
+        drawRoundRect(
+            color = colour,
+            topLeft = at(x, y),
+            size = Size(w * unit, h * unit),
+            cornerRadius = CornerRadius(r * unit),
+            alpha = alpha,
+        )
+
+    val needle = Path().apply {
+        moveTo(at(-38f, 0f))
+        lineTo(at(-23f, -1.7f))
+        lineTo(at(-23f, 1.7f))
+        close()
+    }
+    drawPath(needle, Barrel, alpha = alpha)
+    drawPath(needle, Accent, alpha = alpha, style = Stroke(1.2f * unit, join = StrokeJoin.Round))
+
+    box(-24f, -3.9f, 27f, 7.8f, 3.4f)
+    drawRoundRect(
+        color = Accent,
+        topLeft = at(-24f, -3.9f),
+        size = Size(27f * unit, 7.8f * unit),
+        cornerRadius = CornerRadius(3.4f * unit),
+        alpha = alpha,
+        style = Stroke(1.7f * unit),
+    )
+    GROOVES.forEach { x -> box(x, -3.6f, 1.6f, 7.2f, colour = Accent) }
+
+    box(3f, -1.7f, 10f, 3.4f, 1.7f)
+    drawRoundRect(
+        color = Accent,
+        topLeft = at(3f, -1.7f),
+        size = Size(10f * unit, 3.4f * unit),
+        cornerRadius = CornerRadius(1.7f * unit),
+        alpha = alpha,
+        style = Stroke(1.2f * unit),
+    )
+
+    val flight = Path().apply {
+        moveTo(at(12f, 0f))
+        lineTo(at(17.5f, -7.6f))
+        lineTo(at(34f, -6.6f))
+        lineTo(at(34f, 6.6f))
+        lineTo(at(17.5f, 7.6f))
+        close()
+    }
+    drawPath(flight, Barrel, alpha = alpha)
+    drawPath(flight, Accent, alpha = alpha, style = Stroke(1.7f * unit, join = StrokeJoin.Round))
+    drawLine(
+        color = Accent,
+        start = at(15f, 0f),
+        end = at(33f, 0f),
+        strokeWidth = 1.2f * unit,
+        cap = StrokeCap.Round,
+        alpha = 0.65f * alpha,
+    )
+}
+
+private fun Path.moveTo(at: Offset) = moveTo(at.x, at.y)
+private fun Path.lineTo(at: Offset) = lineTo(at.x, at.y)
+private fun Path.quadraticTo(control: Offset, to: Offset) =
+    quadraticTo(control.x, control.y, to.x, to.y)
+private fun Path.cubicTo(c1: Offset, c2: Offset, to: Offset) =
+    cubicTo(c1.x, c1.y, c2.x, c2.y, to.x, to.y)

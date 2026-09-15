@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +26,7 @@ import com.batu.simpledarttracker.domain.cricket.CricketTarget
 import com.batu.simpledarttracker.domain.cricket.StandardCricketTargets
 import com.batu.simpledarttracker.domain.cricket.randomCricketTargets
 import com.batu.simpledarttracker.domain.game.GameMode
+import com.batu.simpledarttracker.ui.theme.BrandButton
 import com.batu.simpledarttracker.domain.model.Player
 import com.batu.simpledarttracker.domain.x01.X01Config
 import com.batu.simpledarttracker.ui.common.AppScaffold
@@ -156,13 +156,12 @@ fun GameSetupScreen(
         modifier = modifier,
         onBack = onBack,
         bottomBar = {
-            Button(
+            BrandButton(
+                text = stringResource(Res.string.action_start),
                 onClick = { setup?.let(onStart) },
                 enabled = setup != null,
                 modifier = Modifier.fillMaxWidth().bottomBarInsets().padding(16.dp),
-            ) {
-                Text(stringResource(Res.string.action_start))
-            }
+            )
         },
     ) { padding ->
         Column(

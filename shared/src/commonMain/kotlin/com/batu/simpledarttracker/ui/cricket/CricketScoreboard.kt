@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -165,7 +164,7 @@ private fun ScoreHeader(state: CricketGameState) {
             // The turn moves by colour and by an underline that grows into place — nothing is
             // scaled, so type stays crisp and the columns never jostle each other.
             val container by animateColorAsState(
-                targetValue = if (isCurrent) Brand.Green else Brand.Key,
+                targetValue = if (isCurrent) Brand.Gold else Brand.Key,
                 animationSpec = tween(TURN_ANIMATION_MILLIS),
                 label = "headerContainer",
             )
@@ -245,7 +244,7 @@ private fun MarkCell(
             .background(
                 when {
                     // A dead row flattens into the board: nothing here is worth aiming at.
-                    dead -> Brand.Slate2.copy(alpha = 0.6f)
+                    dead -> Brand.Panel.copy(alpha = 0.6f)
                     isThrowing -> Brand.Key
                     else -> Brand.Key.copy(alpha = 0.55f)
                 },

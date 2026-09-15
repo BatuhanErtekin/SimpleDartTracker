@@ -75,7 +75,7 @@ fun CricketBoard(
     AppScaffold(
         title = "${stringResource(Res.string.mode_cricket)} · $scoringLabel",
         modifier = modifier,
-        containerColor = Brand.Slate,
+        containerColor = Brand.Night,
         contentColor = Brand.Chalk,
         navigationIcon = {
             IconButton(onClick = { showSettings = true }) {
@@ -97,9 +97,9 @@ fun CricketBoard(
                 },
                 badge = when {
                     CricketEngine.outcomeOf(shown) == TurnOutcome.WIN ->
-                        OutcomeBadge(stringResource(Res.string.label_checkout), Brand.Green)
+                        OutcomeBadge(stringResource(Res.string.label_checkout), Brand.Gold)
                     shown.houseClaimed ->
-                        OutcomeBadge(stringResource(Res.string.label_house), Brand.Red)
+                        OutcomeBadge(stringResource(Res.string.label_house), Brand.Ember)
                     else -> null
                 },
                 canUndo = canUndo,

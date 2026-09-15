@@ -156,14 +156,14 @@ fun CricketOptions(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             PresetTile(
-                accent = ModeAccent(Brand.Green, Brand.GreenDeep),
+                accent = ModeAccent(Brand.Gold, Brand.GoldDeep),
                 text = stringResource(Res.string.cricket_scoring_plain),
                 selected = scoring == CricketScoring.STANDARD,
                 onClick = { onScoringChange(CricketScoring.STANDARD) },
                 modifier = Modifier.weight(1f),
             )
             PresetTile(
-                accent = ModeAccent(Brand.Red, Brand.RedDeep),
+                accent = ModeAccent(Brand.Ember, Brand.EmberDeep),
                 text = stringResource(Res.string.cricket_scoring_penalty),
                 selected = scoring == CricketScoring.CUT_THROAT,
                 onClick = { onScoringChange(CricketScoring.CUT_THROAT) },

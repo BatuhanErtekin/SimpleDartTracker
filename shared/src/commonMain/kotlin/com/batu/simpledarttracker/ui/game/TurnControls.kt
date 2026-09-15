@@ -9,10 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +22,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.batu.simpledarttracker.ui.common.bottomBarInsets
 import com.batu.simpledarttracker.ui.theme.Brand
+import com.batu.simpledarttracker.ui.theme.BrandButton
+import com.batu.simpledarttracker.ui.theme.BrandOutlineButton
 import org.jetbrains.compose.resources.stringResource
 import simpledarttracker.shared.generated.resources.Res
 import simpledarttracker.shared.generated.resources.action_undo
@@ -54,7 +53,7 @@ fun TurnControls(
     modifier: Modifier = Modifier,
     onMiss: (() -> Unit)? = null,
 ) {
-    Surface(modifier = modifier, color = Brand.Slate2, contentColor = Brand.Chalk) {
+    Surface(modifier = modifier, color = Brand.Panel, contentColor = Brand.Chalk) {
         Column(
             // The surface itself runs to the bottom edge; only its content clears the
             // navigation bar, so the bar sits on the panel colour rather than on the buttons.
@@ -82,26 +81,23 @@ fun TurnControls(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                OutlinedButton(
+                // Honey: taking something back is the one action here worth a second look, and
+                // it is the one accent no scoreboard state uses.
+                BrandOutlineButton(
+                    text = stringResource(Res.string.action_undo),
                     onClick = onUndo,
                     enabled = canUndo,
-                    // Amber: taking something back is the one action here worth a second look.
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Brand.Amber),
+                    content = Brand.Honey,
                     modifier = Modifier.weight(1f),
-                ) {
-                    Text(stringResource(Res.string.action_undo))
-                }
+                )
                 if (onMiss != null) {
-                    Button(
+                    BrandButton(
+                        text = stringResource(Res.string.label_miss),
                         onClick = onMiss,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Brand.Key,
-                            contentColor = Brand.Chalk,
-                        ),
+                        container = Brand.Key,
+                        content = Brand.Chalk,
                         modifier = Modifier.weight(1f),
-                    ) {
-                        Text(stringResource(Res.string.label_miss))
-                    }
+                    )
                 }
             }
         }

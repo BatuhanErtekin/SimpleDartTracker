@@ -1,9 +1,6 @@
 package com.batu.simpledarttracker.ui.game
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,17 +20,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.batu.simpledarttracker.domain.model.Dart
 import com.batu.simpledarttracker.domain.model.Ring
 import com.batu.simpledarttracker.ui.theme.Brand
+import com.batu.simpledarttracker.ui.theme.pressable
 
 // A key splits its width by weight: the label takes half, the D/T sections a quarter each.
 // A key with a single option gives it the room of both, so that key reads 50/50.
 private const val KEY_LABEL_WEIGHT = 2f
+
+// Each part of a key rounds its own background. The row cannot clip the lot any more: a press
+// flares out past the key, and a clip there would cut the light off at the edge.
+private val KeyShape = RoundedCornerShape(12.dp)
+private val LabelShape = RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp)
+private val OptionEndShape = RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp)
 const val KEY_OPTION_WEIGHT = 1f
 const val KEY_WIDE_OPTION_WEIGHT = 2f
 
@@ -89,7 +93,6 @@ fun <T> DartPad(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun <T> DartKey(
     spec: DartKeySpec<T>,
@@ -98,17 +101,20 @@ private fun <T> DartKey(
     modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    Row(modifier.clip(RoundedCornerShape(12.dp))) {
+    Row(modifier) {
         // Single (tap) plus the long-press menu.
         Box(
             modifier = Modifier
                 .weight(KEY_LABEL_WEIGHT)
                 .fillMaxHeight()
-                .background(if (enabled) Brand.Key else Brand.Key.copy(alpha = 0.4f))
-                .combinedClickable(
-                    enabled = enabled,
+                .pressable(
                     onClick = { onSelect(spec.value) },
+                    enabled = enabled,
                     onLongClick = { if (spec.options.isNotEmpty()) expanded = true },
+                )
+                .background(
+                    color = if (enabled) Brand.Key else Brand.Key.copy(alpha = 0.4f),
+                    shape = if (spec.options.isEmpty()) KeyShape else LabelShape,
                 ),
             contentAlignment = Alignment.Center,
         ) {
@@ -129,13 +135,16 @@ private fun <T> DartKey(
         }
         // Adjacent D / T sections.
         spec.options.forEach { opt ->
-            Box(Modifier.width(1.5.dp).fillMaxHeight().background(Brand.Slate))
+            Box(Modifier.width(1.5.dp).fillMaxHeight().background(Brand.Night))
             Box(
                 modifier = Modifier
                     .weight(opt.weight)
                     .fillMaxHeight()
-                    .background(if (enabled) opt.color else opt.color.copy(alpha = 0.35f))
-                    .clickable(enabled = enabled) { onSelect(opt.value) },
+                    .pressable(onClick = { onSelect(opt.value) }, enabled = enabled, flare = Brand.Honey)
+                    .background(
+                        color = if (enabled) opt.color else opt.color.copy(alpha = 0.35f),
+                        shape = if (opt == spec.options.last()) OptionEndShape else RectangleShape,
+                    ),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
